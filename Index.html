@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hun Lyngdoh — AI Automation for Restaurants & Hotels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050507;
+  --bg2:#0c0c10;
+  --card:#111116;
+  --card2:#16161d;
+  --border:rgba(255,255,255,0.07);
+  --green:#a8ff3e;
+  --green2:#c5ff7a;
+  --greenglow:rgba(168,255,62,0.15);
+  --white:#f0f0ee;
+  --muted:#666;
+  --muted2:#999;
+  --serif:'Syne',sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--green);border-radius:2px}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  opacity:0.5;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 5vw;
+  background:rgba(5,5,7,0.8);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.logo{font-family:var(--serif);font-size:1.1rem;font-weight:800;letter-spacing:-0.02em}
+.logo span{color:var(--green)}
+.nav-wa{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:var(--green);color:#000;
+  font-size:0.8rem;font-weight:600;
+  padding:0.5rem 1.1rem;border-radius:50px;
+  text-decoration:none;
+  transition:transform 0.15s,box-shadow 0.2s;
+}
+.nav-wa:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(168,255,62,0.4)}
+
+/* ── HERO ── */
+#hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:7rem 5vw 5rem;
+  position:relative;overflow:hidden;
+}
+.hero-orb{
+  position:absolute;
+  border-radius:50%;pointer-events:none;
+}
+.orb1{
+  width:500px;height:500px;top:-100px;right:-150px;
+  background:radial-gradient(circle,rgba(168,255,62,0.08) 0%,transparent 65%);
+  animation:orbpulse 8s ease-in-out infinite;
+}
+.orb2{
+  width:300px;height:300px;bottom:-50px;left:-100px;
+  background:radial-gradient(circle,rgba(168,255,62,0.05) 0%,transparent 65%);
+  animation:orbpulse 10s ease-in-out infinite reverse;
+}
+@keyframes orbpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+
+.hero-content{position:relative;z-index:1;max-width:680px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--green);
+  border:1px solid rgba(168,255,62,0.3);
+  background:rgba(168,255,62,0.06);
+  padding:0.35rem 1rem;border-radius:50px;
+  margin-bottom:1.8rem;
+  opacity:0;animation:up 0.7s 0.1s forwards;
+}
+.hero-badge::before{content:'●';font-size:0.45rem;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+#hero h1{
+  font-family:var(--serif);
+  font-size:clamp(2.6rem,8vw,5rem);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-0.03em;
+  margin-bottom:1.5rem;
+  opacity:0;animation:up 0.7s 0.2s forwards;
+}
+#hero h1 .hl{
+  color:var(--green);
+  text-shadow:0 0 40px rgba(168,255,62,0.4);
+}
+#hero p{
+  font-size:clamp(1rem,2.5vw,1.15rem);
+  color:var(--muted2);max-width:46ch;
+  margin-bottom:2.5rem;line-height:1.75;
+  opacity:0;animation:up 0.7s 0.3s forwards;
+}
+.hero-cta{
+  display:flex;flex-wrap:wrap;gap:0.85rem;
+  opacity:0;animation:up 0.7s 0.4s forwards;
+}
+.btn-g{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  background:var(--green);color:#000;
+  font-family:var(--sans);font-size:1rem;font-weight:600;
+  padding:1rem 2rem;border-radius:50px;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:transform 0.15s,box-shadow 0.2s;
+  white-space:nowrap;
+}
+.btn-g:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(168,255,62,0.4)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  background:transparent;color:var(--white);
+  font-family:var(--sans);font-size:1rem;font-weight:400;
+  padding:1rem 2rem;border-radius:50px;
+  border:1px solid var(--border);
+  text-decoration:none;
+  transition:border-color 0.2s,background 0.2s;
+}
+.btn-outline:hover{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.04)}
+
+.hero-trust{
+  display:flex;align-items:center;gap:1rem;
+  margin-top:3rem;padding-top:2rem;
+  border-top:1px solid var(--border);
+  opacity:0;animation:up 0.7s 0.5s forwards;
+  flex-wrap:wrap;gap:1.5rem;
+}
+.trust-item{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--muted2)}
+.trust-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION BASE ── */
+section{padding:5rem 5vw;position:relative;z-index:1}
+.s-label{
+  font-size:0.68rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--green);margin-bottom:0.8rem;
+}
+.s-title{
+  font-family:var(--serif);
+  font-size:clamp(1.9rem,5vw,3rem);
+  font-weight:800;line-height:1.1;letter-spacing:-0.02em;
+  margin-bottom:1rem;
+}
+.s-sub{font-size:1rem;color:var(--muted2);max-width:48ch;line-height:1.75;margin-bottom:3rem}
+.sep{border:none;border-top:1px solid var(--border)}
+
+/* ── PROBLEM ── */
+#problem{border-bottom:1px solid var(--border)}
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.problem-card{
+  background:rgba(255,60,60,0.04);
+  border:1px solid rgba(255,60,60,0.12);
+  border-radius:20px;padding:1.8rem;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.problem-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,0.3)}
+.p-icon{font-size:1.8rem;margin-bottom:1rem;display:block}
+.problem-card h3{font-size:1rem;font-weight:600;margin-bottom:0.4rem;color:#ff8080}
+.problem-card p{font-size:0.85rem;color:var(--muted2);line-height:1.65}
+
+/* ── SOLUTION ── */
+#solution{border-bottom:1px solid var(--border)}
+.solution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.sol-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:1.8rem;
+  position:relative;overflow:hidden;
+  transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;
+}
+.sol-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.sol-card:hover{transform:translateY(-3px);border-color:rgba(168,255,62,0.2);box-shadow:0 16px 40px rgba(0,0,0,0.4)}
+.sol-card:hover::after{opacity:1}
+.sol-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(168,255,62,0.08);
+  border:1px solid rgba(168,255,62,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;margin-bottom:1.2rem;
+}
+.sol-card h3{font-size:1rem;font-weight:600;margin-bottom:0.4rem}
+.sol-card p{font-size:0.85rem;color:var(--muted2);line-height:1.65}
+
+/* ── HOW IT WORKS ── */
+#how{border-bottom:1px solid var(--border)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.step-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:2rem 1.6rem;
+  text-align:center;
+  transition:transform 0.2s,border-color 0.2s;
+}
+.step-card:hover{transform:translateY(-3px);border-color:rgba(168,255,62,0.2)}
+.step-num{
+  font-family:var(--serif);
+  font-size:3rem;font-weight:800;
+  color:rgba(168,255,62,0.15);
+  line-height:1;margin-bottom:0.8rem;display:block;
+}
+.step-icon{font-size:1.8rem;margin-bottom:0.8rem;display:block}
+.step-card h3{font-size:0.95rem;font-weight:600;margin-bottom:0.4rem}
+.step-card p{font-size:0.83rem;color:var(--muted2);line-height:1.6}
+.step-arrow{
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(168,255,62,0.3);font-size:1.5rem;
+  padding-top:1rem;
+}
+
+/* ── DEMO ── */
+#demo{border-bottom:1px solid var(--border)}
+.demo-wrap{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:3rem;align-items:center;
+}
+.demo-left .s-title{margin-bottom:0.8rem}
+.demo-left p{color:var(--muted2);font-size:0.95rem;line-height:1.75;margin-bottom:1.5rem}
+.demo-feature{
+  display:flex;align-items:center;gap:0.75rem;
+  margin-bottom:0.75rem;font-size:0.9rem;
+}
+.demo-check{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(168,255,62,0.12);
+  border:1px solid rgba(168,255,62,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.6rem;color:var(--green);flex-shrink:0;
+}
+
+/* Chat mockup */
+.chat-mockup{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:1.5rem;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(168,255,62,0.05);
+}
+.chat-header{
+  display:flex;align-items:center;gap:0.75rem;
+  padding-bottom:1rem;
+  border-bottom:1px solid var(--border);
+  margin-bottom:1rem;
+}
+.chat-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),#5adb00);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+.chat-name{font-size:0.88rem;font-weight:600}
+.chat-status{font-size:0.72rem;color:var(--green);display:flex;align-items:center;gap:0.3rem}
+.chat-status::before{content:'●';font-size:0.4rem}
+.chat-messages{display:flex;flex-direction:column;gap:0.75rem}
+.msg{
+  max-width:80%;padding:0.7rem 1rem;
+  border-radius:16px;font-size:0.83rem;line-height:1.5;
+}
+.msg.user{
+  background:rgba(255,255,255,0.07);
+  border-radius:16px 16px 4px 16px;
+  align-self:flex-end;color:#ccc;
+}
+.msg.ai{
+  background:rgba(168,255,62,0.1);
+  border:1px solid rgba(168,255,62,0.15);
+  border-radius:16px 16px 16px 4px;
+  align-self:flex-start;color:var(--white);
+}
+.msg-time{font-size:0.65rem;color:var(--muted);margin-top:0.25rem;text-align:right}
+.typing{
+  display:flex;align-items:center;gap:0.3rem;
+  padding:0.7rem 1rem;
+  background:rgba(168,255,62,0.06);
+  border:1px solid rgba(168,255,62,0.1);
+  border-radius:16px 16px 16px 4px;
+  width:fit-content;
+}
+.typing span{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);opacity:0.4;
+  animation:dot 1.2s infinite;
+}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes dot{0%,100%{opacity:0.2;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+
+/* ── PRICING ── */
+#pricing{border-bottom:1px solid var(--border)}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.price-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:2rem;
+  transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;
+  position:relative;
+}
+.price-card.featured{
+  border-color:rgba(168,255,62,0.4);
+  background:rgba(168,255,62,0.04);
+  box-shadow:0 0 40px rgba(168,255,62,0.08);
+}
+.price-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.4)}
+.price-tag{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--green);color:#000;
+  font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  padding:0.3rem 0.9rem;border-radius:50px;white-space:nowrap;
+}
+.price-name{font-size:0.8rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem}
+.price-amount{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,6vw,3rem);
+  font-weight:800;line-height:1;
+  margin-bottom:0.3rem;
+}
+.price-amount span{color:var(--green)}
+.price-period{font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem}
+.price-features{list-style:none;margin-bottom:1.8rem}
+.price-features li{
+  display:flex;align-items:flex-start;gap:0.6rem;
+  font-size:0.85rem;color:var(--muted2);
+  padding:0.4rem 0;border-bottom:1px solid var(--border);
+  line-height:1.5;
+}
+.price-features li:last-child{border-bottom:none}
+.price-features li::before{content:'✓';color:var(--green);font-size:0.75rem;font-weight:700;flex-shrink:0;margin-top:0.15rem}
+.price-btn{
+  display:block;text-align:center;
+  background:var(--green);color:#000;
+  font-family:var(--sans);font-size:0.9rem;font-weight:600;
+  padding:0.85rem;border-radius:50px;
+  text-decoration:none;
+  transition:transform 0.15s,box-shadow 0.2s;
+}
+.price-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(168,255,62,0.35)}
+.price-btn.ghost{
+  background:transparent;color:var(--white);
+  border:1px solid var(--border);
+}
+.price-btn.ghost:hover{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.04);box-shadow:none}
+
+/* ── FINAL CTA ── */
+#cta{
+  text-align:center;
+  background:radial-gradient(ellipse at 50% 0%,rgba(168,255,62,0.08) 0%,transparent 60%);
+  border-bottom:1px solid var(--border);
+}
+#cta .s-title{margin-bottom:1rem}
+#cta p{color:var(--muted2);font-size:1rem;max-width:42ch;margin:0 auto 2.5rem;line-height:1.75}
+.cta-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
+.cta-note{font-size:0.78rem;color:var(--muted);margin-top:1.5rem}
+.cta-note span{color:var(--green)}
+
+/* ── FOOTER ── */
+footer{
+  padding:1.8rem 5vw;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:0.5rem;
+  font-size:0.78rem;color:var(--muted);
+}
+footer a{color:var(--muted);text-decoration:none;transition:color 0.2s}
+footer a:hover{color:var(--green)}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  section{padding:4rem 5vw}
+  .demo-wrap{grid-template-columns:1fr}
+  .step-arrow{display:none}
+}
+@media(max-width:480px){
+  .steps{grid-template-columns:1fr}
+  .hero-trust{flex-direction:column;align-items:flex-start;gap:0.75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="logo">Hun<span>.</span></span>
+  <a href="https://wa.me/917673962811" target="_blank" class="nav-wa">💬 WhatsApp</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">AI Automation for Small Businesses</div>
+    <h1>Never Miss a Customer Again —<br><span class="hl">AI Handles Your Bookings 24/7</span></h1>
+    <p>Automate WhatsApp replies, handle bookings, and respond instantly using AI. While you sleep, your business keeps running.</p>
+    <div class="hero-cta">
+      <a href="https://wa.me/917673962811?text=Hi%20Hun!%20I%20want%20a%20free%20demo%20of%20AI%20automation%20for%20my%20business." target="_blank" class="btn-g">💬 Chat on WhatsApp</a>
+      <a href="#how" class="btn-outline">See How It Works ↓</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><div class="trust-dot"></div>Works on WhatsApp</div>
+      <div class="trust-item"><div class="trust-dot"></div>Setup in 48 hours</div>
+      <div class="trust-item"><div class="trust-dot"></div>No tech skills needed</div>
+      <div class="trust-item"><div class="trust-dot"></div>Replies in 0 seconds</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="reveal">
+    <div class="s-label">The Problem</div>
+    <div class="s-title">Is this your business right now?</div>
+    <div class="s-sub">Every missed message is a missed booking. Every slow reply is a customer lost to your competitor.</div>
+  </div>
+  <div class="problem-grid">
+    <div class="problem-card reveal">
+      <span class="p-icon">😩</span>
+      <h3>Missing customer messages</h3>
+      <p>Customers WhatsApp you at 11pm asking about rooms or tables. You're asleep. They book somewhere else.</p>
+    </div>
+    <div class="problem-card reveal">
+      <span class="p-icon">🐢</span>
+      <h3>Slow replies frustrate people</h3>
+      <p>Today's customers expect instant replies. A 2-hour delay feels like you don't care about their business.</p>
+    </div>
+    <div class="problem-card reveal">
+      <span class="p-icon">📉</span>
+      <h3>Lost bookings every week</h3>
+      <p>Without a system, bookings get forgotten, double-booked, or lost in a sea of WhatsApp messages.</p>
+    </div>
+    <div class="problem-card reveal">
+      <span class="p-icon">😤</span>
+      <h3>Same questions, every day</h3>
+      <p>"What time do you open?" "Do you have rooms available?" You answer the same 5 questions 20 times a day.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="reveal">
+    <div class="s-label">The Solution</div>
+    <div class="s-title">Your business, running on AI</div>
+    <div class="s-sub">One setup. Your AI handles messages, bookings, and FAQs — automatically, around the clock.</div>
+  </div>
+  <div class="solution-grid">
+    <div class="sol-card reveal">
+      <div class="sol-icon">⚡</div>
+      <h3>Instant replies — 0 delay</h3>
+      <p>Customer sends a message at 2am, they get a smart reply in under a second. Every time, without fail.</p>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">📅</div>
+      <h3>Auto booking system</h3>
+      <p>AI collects name, date, time, and party size — then confirms the booking and notifies you instantly.</p>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">🌙</div>
+      <h3>Works 24 hours, 7 days</h3>
+      <p>No holidays, no sick days. Your AI agent is always on, always responding, always professional.</p>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">🤖</div>
+      <h3>Handles FAQs automatically</h3>
+      <p>Menu, prices, location, timings — the AI knows it all and answers instantly so you don't have to.</p>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">🎙️</div>
+      <h3>Voice AI Agent</h3>
+      <p>An AI that answers your phone calls naturally — takes bookings, handles queries, never misses a call.</p>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">🔔</div>
+      <h3>You stay in control</h3>
+      <p>Every booking lands in your WhatsApp as a clean summary. You see everything, without doing anything.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="reveal">
+    <div class="s-label">How It Works</div>
+    <div class="s-title">3 steps. That's all.</div>
+    <div class="s-sub">No complicated tech. No training required. It just works from day one.</div>
+  </div>
+  <div class="steps">
+    <div class="step-card reveal">
+      <span class="step-num">01</span>
+      <span class="step-icon">📲</span>
+      <h3>Customer sends a message</h3>
+      <p>They WhatsApp your business number asking about bookings, prices, or availability.</p>
+    </div>
+    <div class="step-card reveal">
+      <span class="step-num">02</span>
+      <span class="step-icon">⚡</span>
+      <h3>AI replies instantly</h3>
+      <p>In less than a second, your AI sends a smart, friendly, professional reply — in your brand's voice.</p>
+    </div>
+    <div class="step-card reveal">
+      <span class="step-num">03</span>
+      <span class="step-icon">✅</span>
+      <h3>Booking confirmed automatically</h3>
+      <p>Details saved, customer confirmed, you get notified. Zero manual work on your end.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="demo-wrap">
+    <div class="demo-left reveal">
+      <div class="s-label">Live Demo</div>
+      <div class="s-title">See it in action</div>
+      <p>This is exactly how your AI assistant will handle customer messages — instantly, professionally, automatically.</p>
+      <div class="demo-feature"><div class="demo-check">✓</div> Replies in under 1 second</div>
+      <div class="demo-feature"><div class="demo-check">✓</div> Collects booking details automatically</div>
+      <div class="demo-feature"><div class="demo-check">✓</div> Sounds natural, not robotic</div>
+      <div class="demo-feature"><div class="demo-check">✓</div> Works on your existing WhatsApp number</div>
+      <br/>
+      <a href="https://wa.me/917673962811?text=Hi%20Hun!%20I%20want%20to%20see%20a%20live%20demo." target="_blank" class="btn-g" style="width:fit-content">💬 Request Live Demo</a>
+    </div>
+    <div class="chat-mockup reveal">
+      <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-name">Your Business AI</div>
+          <div class="chat-status">Online now</div>
+        </div>
+      </div>
+      <div class="chat-messages">
+        <div class="msg user">Hi, do you have a table for 2 tomorrow at 7pm?<div class="msg-time">10:47 PM</div></div>
+        <div class="msg ai">Hi there! 👋 Yes, we have availability for 2 guests tomorrow at 7:00 PM. May I get your name to confirm the booking?<div class="msg-time">10:47 PM · AI replied</div></div>
+        <div class="msg user">Sure, it's Priya<div class="msg-time">10:48 PM</div></div>
+        <div class="msg ai">Perfect, Priya! ✅ Your table for 2 is confirmed for tomorrow, 7:00 PM. We'll see you then! Would you like directions?<div class="msg-time">10:48 PM · AI replied</div></div>
+        <div class="typing"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="reveal">
+    <div class="s-label">Pricing</div>
+    <div class="s-title">Simple, affordable pricing</div>
+    <div class="s-sub">No hidden fees. No complicated contracts. Get your AI running in 48 hours.</div>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-name">Starter</div>
+      <div class="price-amount">₹<span>3,000</span></div>
+      <div class="price-period">One-time setup</div>
+      <ul class="price-features">
+        <li>WhatsApp Auto Reply Bot</li>
+        <li>FAQ Automation</li>
+        <li>Basic Booking Collection</li>
+        <li>Owner Notification</li>
+        <li>Setup in 48 hours</li>
+      </ul>
+      <a href="https://wa.me/917673962811?text=Hi%20Hun!%20I%20am%20interested%20in%20the%20Starter%20plan." target="_blank" class="price-btn ghost">Get Started →</a>
+    </div>
+    <div class="price-card featured reveal">
+      <div class="price-tag">Most Popular</div>
+      <div class="price-name">Pro</div>
+      <div class="price-amount">₹<span>5,000</span></div>
+      <div class="price-period">One-time setup + ₹999/mo maintenance</div>
+      <ul class="price-features">
+        <li>Everything in Starter</li>
+        <li>Full Booking System</li>
+        <li>Voice AI Agent</li>
+        <li>Menu & Price Automation</li>
+        <li>Monthly Updates & Support</li>
+        <li>Priority Response</li>
+      </ul>
+      <a href="https://wa.me/917673962811?text=Hi%20Hun!%20I%20am%20interested%20in%20the%20Pro%20plan." target="_blank" class="price-btn">💬 Get Pro Plan →</a>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-name">Custom</div>
+      <div class="price-amount" style="font-size:2rem">Let's<span> Talk</span></div>
+      <div class="price-period">For larger businesses</div>
+      <ul class="price-features">
+        <li>Everything in Pro</li>
+        <li>Multi-location Support</li>
+        <li>Custom AI Personality</li>
+        <li>CRM Integration</li>
+        <li>Dedicated Support</li>
+        <li>Custom Features</li>
+      </ul>
+      <a href="https://wa.me/917673962811?text=Hi%20Hun!%20I%20need%20a%20custom%20AI%20automation%20solution." target="_blank" class="price-btn ghost">Contact Me →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta">
+  <div class="reveal">
+    <div class="s-label" style="text-align:center">Get Started Today</div>
+    <div class="s-title">Get Your AI Setup Today</div>
+    <p>Join restaurants, cafes, and guest houses already using AI to handle their customer messages automatically.</p>
+    <div class="cta-btns">
+      <a href="https://wa.me/917673962811?text=Hi%20Hun!%20I%20want%20to%20set%20up%20AI%20automation%20for%20my%20business." target="_blank" class="btn-g" style="font-size:1.05rem;padding:1.1rem 2.2rem">💬 Message on WhatsApp →</a>
+    </div>
+    <div class="cta-note">Setup starts from <span>₹3,000</span> · Ready in <span>48 hours</span> · No tech skills needed</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="logo" style="font-family:'Syne',sans-serif;font-weight:800">Hun<span style="color:var(--green)">.</span></span>
+  <span>AI Automation for Small Businesses</span>
+  <span>
+    <a href="https://instagram.com/Hunlyngdoh1" target="_blank">Instagram</a> ·
+    <a href="https://wa.me/917673962811" target="_blank">WhatsApp</a>
+  </span>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => {
+        e.target.classList.add('visible');
+      }, 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Stagger children in grids
+document.querySelectorAll('.problem-grid, .solution-grid, .steps, .pricing-grid').forEach(grid => {
+  grid.querySelectorAll('.reveal').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 0.08}s`;
+  });
+});
+</script>
+</body>
+</html>
